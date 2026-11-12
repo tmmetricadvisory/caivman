@@ -1,0 +1,5 @@
+{
+  "name": "capture",
+  "description": "Reads what you dropped in your brain (brand guidelines, logo, fonts, your best work, your own emails) and writes brand.md, voice.md, standards.md and sources.md, then builds your Word and PowerPoint templates. Run once at set-up, again whenever the brand or the way you write changes.",
+  "author": { "name": "Tim Macpherson" }
+}

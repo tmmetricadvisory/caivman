@@ -1,0 +1,23 @@
+{
+  "name": "caivman",
+  "owner": {
+    "name": "Tim Macpherson"
+  },
+  "plugins": [
+    {
+      "name": "capture",
+      "source": "./plugins/capture",
+      "description": "Reads what you dropped in your brain (brand guidelines, logo, fonts, your best work, your own emails) and writes brand.md, voice.md, standards.md and sources.md, then builds your Word and PowerPoint templates. Run once at set-up, again whenever the brand or the way you write changes."
+    },
+    {
+      "name": "wrap-up",
+      "source": "./plugins/wrap-up",
+      "description": "The habit. \"Note that ...\" saves a fact to the right file mid-session. \"Wrap up\" at the end files what the session taught (clients, how you work, decisions, skill corrections), writes today's note, saves to GitHub and tells you what it kept and what it kept private."
+    },
+    {
+      "name": "first-skill",
+      "source": "./plugins/first-skill",
+      "description": "Builds your first skill: a three-question picker finds one routine job with a clear input and output, then a guided interview and one example of your own good work become a written method Claude follows every time. Two worked examples included."
+    }
+  ]
+}
