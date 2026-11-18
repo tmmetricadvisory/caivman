@@ -27,7 +27,7 @@ They read your brain folder and write into it. They do not send anything anywher
 
 ## The brain they expect
 
-A folder made from the [caivman starter](https://github.com/tmmetricadvisory/caivman-starter): `CLAUDE.md`, `context/`, `bench/`, `clients/`, `memory/`, `.claude/skills/`. The guide that walks you through it: [caivman](https://claude.ai/artifact/9xkQ2Gv8KfZkaQCYkPbn6y).
+A folder made from the [caivman starter](https://github.com/tmmetricadvisory/caivman-starter): `CLAUDE.md`, `context/`, `bench/`, `clients/`, `memory/`, `.claude/skills/`. The guide that walks you through it: [caivman](https://tmmetricadvisory.github.io/caivman/).
 
 ## What's new
 

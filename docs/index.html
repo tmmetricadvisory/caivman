@@ -1,0 +1,635 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="caivman: set up your Claude brain in one sitting. Context, connected tools, the habit, your first skill.">
+<title>caivman</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one long, calm read in five chapters (context, connect, habit, first skill, second person), checklists you tick,
+   prompts you copy. Amber marks "you do this", teal marks "Claude does this". Built from the WA Fuels onboarding pack template. */
+:root {
+  --paper: #f6f7f5; --card: #ffffff; --ink: #172430; --muted: #566472; --line: #d8dee2;
+  --amber: #b86a0c; --amber-soft: #fbefdc; --teal: #1d6a64; --teal-soft: #e0efec; --navy: #22384a; --navy-soft: #e5ebf1;
+  --bad: #a3302b; --bad-soft: #f8e5e3;
+  --display: "Archivo", "Arial Narrow", system-ui, sans-serif;
+  --body: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --paper: #10171d; --card: #18222b; --ink: #e5eaee; --muted: #9caab6; --line: #2c3a46;
+  --amber: #f0a64a; --amber-soft: #3a2a14; --teal: #6cc8bd; --teal-soft: #15302d; --navy: #a9c3da; --navy-soft: #1c2b38;
+  --bad: #f09a92; --bad-soft: #3b1f1d; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --paper: #10171d; --card: #18222b; --ink: #e5eaee; --muted: #9caab6; --line: #2c3a46;
+  --amber: #f0a64a; --amber-soft: #3a2a14; --teal: #6cc8bd; --teal-soft: #15302d; --navy: #a9c3da; --navy-soft: #1c2b38;
+  --bad: #f09a92; --bad-soft: #3b1f1d; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font: 400 17px/1.55 var(--body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wrap { max-width: 920px; margin: 0 auto; padding-block: 28px 80px; display: grid; gap: 64px; }
+h1, h2, h3 { font-family: var(--display); line-height: 1.12; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(2rem, 5vw, 2.9rem); font-weight: 800; letter-spacing: -0.01em; }
+h2 { font-size: clamp(1.5rem, 3.4vw, 2rem); font-weight: 800; }
+h3 { font-size: 1.15rem; font-weight: 700; }
+p { margin: 0; max-width: 66ch; }
+.eyebrow { font: 500 0.75rem/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--amber); }
+.lede { font-size: 1.2rem; color: var(--muted); }
+.muted { color: var(--muted); }
+.small { font-size: 0.9rem; }
+section { display: grid; gap: 22px; min-width: 0; scroll-margin-top: 64px; }
+.block { display: grid; gap: 14px; min-width: 0; }
+code, .mono { font-family: var(--mono); font-size: 0.86em; }
+a { color: var(--teal); }
+a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+
+nav.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--paper); border-bottom: 1px solid var(--line);
+  margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px))); padding: 10px max(16px, env(safe-area-inset-left, 0px)); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
+nav.top ol { list-style: none; margin: 0 auto; padding: 0; max-width: 920px; display: flex; flex-wrap: wrap; gap: 6px 18px; font: 500 0.88rem/1.3 var(--display); }
+nav.top a { color: var(--ink); text-decoration: none; }
+nav.top a span { color: var(--amber); font-family: var(--mono); margin-right: 6px; }
+
+.hero { display: grid; gap: 16px; padding-top: 12px; }
+.brand { display: flex; align-items: center; gap: 14px; }
+.brand svg { width: 64px; height: 64px; flex: 0 0 auto; }
+.brand .wordmark { font: 800 1.9rem/1 var(--display); letter-spacing: -0.02em; color: var(--ink); }
+.brand .wordmark span { color: var(--amber); }
+.mark-disc { fill: var(--amber-soft); stroke: var(--amber); stroke-width: 1.5; }
+.mark-hand { fill: var(--amber); }
+.mark-trace { fill: none; stroke: var(--paper); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.mark-node { fill: var(--paper); stroke: var(--amber); stroke-width: 1.2; }
+.cm-ink { fill: var(--ink); }
+.cm-skin { fill: var(--paper); stroke: var(--ink); stroke-width: 1.4; }
+.cm-fur { fill: var(--amber); stroke: var(--ink); stroke-width: 1.4; }
+.cm-line { fill: none; stroke: var(--ink); stroke-width: 1.4; stroke-linecap: round; }
+.cm-text { font: 800 7.5px var(--display); fill: var(--ink); letter-spacing: 0.02em; }
+.markswitch { font: 500 0.72rem/1 var(--mono); color: var(--muted); background: none; border: 1px dashed var(--line); border-radius: 999px; padding: 5px 9px; cursor: pointer; justify-self: start; }
+.who { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font: 500 0.78rem/1 var(--mono); padding: 6px 10px; border-radius: 999px; background: var(--navy-soft); color: var(--navy); }
+.chip.amber { background: var(--amber-soft); color: var(--amber); }
+.chip.teal { background: var(--teal-soft); color: var(--teal); }
+
+.why { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+.why div { border-top: 3px solid var(--navy); padding-top: 10px; display: grid; gap: 4px; }
+.why strong { font-family: var(--display); font-size: 1.05rem; }
+
+.tablewrap { overflow-x: auto; min-width: 0; max-width: 100%; }
+table.kitchen, table.gov { width: 100%; border-collapse: collapse; background: var(--card); border: 1px solid var(--line); }
+.kitchen th, .kitchen td, .gov th, .gov td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--line); vertical-align: top; font-size: 0.95rem; }
+.kitchen th, .gov th { font: 500 0.72rem/1.2 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); background: var(--paper); }
+.kitchen tr:last-child td, .gov tr:last-child td { border-bottom: 0; }
+.kitchen td:first-child, .gov td:first-child { font-family: var(--display); font-weight: 700; white-space: nowrap; }
+.kitchen td:nth-child(2) { color: var(--teal); font-weight: 600; white-space: nowrap; }
+.gov td .mono { color: var(--teal); }
+@media (max-width: 600px) { .kitchen td, .gov td { white-space: normal !important; padding: 10px; } }
+
+.shelf { display: grid; border: 2px solid var(--teal); border-radius: 12px; overflow: hidden; background: var(--card); }
+.shelf-head { background: var(--teal); color: var(--paper); padding: 10px 16px; font: 700 1rem/1.2 var(--display); display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.shelf-head span { font: 500 0.75rem/1.4 var(--mono); opacity: 0.85; }
+.shelf-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.shelf-row > div { padding: 14px 16px; border-bottom: 1px solid var(--line); border-right: 1px solid var(--line); display: grid; gap: 4px; align-content: start; min-width: 0; }
+.shelf-row b { font-family: var(--display); }
+.shelf-row .path { font: 500 0.78rem/1.3 var(--mono); color: var(--teal); overflow-wrap: anywhere; }
+.shelf-row .eg { font-size: 0.88rem; color: var(--muted); }
+
+.steps4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.step { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: grid; gap: 6px; align-content: start; min-width: 0; }
+.step .n { font: 500 0.75rem/1 var(--mono); color: var(--muted); }
+.step.you { border-color: var(--amber); background: var(--amber-soft); }
+.step.you .n { color: var(--amber); }
+@media (max-width: 720px) { .steps4 { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 420px) { .steps4 { grid-template-columns: 1fr; } }
+.report { background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--teal); border-radius: 8px; padding: 14px 16px; font-size: 0.95rem; display: grid; gap: 6px; }
+.report ul { margin: 0; padding-left: 18px; }
+.keep { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.keep > div { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: grid; gap: 6px; min-width: 0; }
+.keep ul { margin: 0; padding-left: 18px; font-size: 0.93rem; }
+@media (max-width: 600px) { .keep { grid-template-columns: 1fr; } }
+.keep .in { border: 2px solid var(--teal); }
+.keep .in > b { color: var(--teal); }
+.keep .on { border: 2px solid var(--navy); background: var(--navy-soft); }
+.keep .on > b { color: var(--navy); }
+
+.phase { display: grid; gap: 10px; }
+.phase h3 { display: flex; gap: 10px; align-items: baseline; }
+.phase h3 .mono { color: var(--amber); font-size: 0.8rem; }
+.task a { overflow-wrap: anywhere; }
+.task { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+.task input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--teal); }
+.task .body { display: grid; gap: 6px; min-width: 0; }
+.task .body > b { font-family: var(--display); }
+.task ol, .task ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; font-size: 0.95rem; }
+.task.done { opacity: 0.6; }
+.task.done .body > b { text-decoration: line-through; }
+.prompt { background: var(--paper); border: 1px dashed var(--muted); border-radius: 8px; padding: 10px 12px; font: 400 0.88rem/1.5 var(--mono); white-space: pre-wrap; overflow-wrap: anywhere; }
+.copy { justify-self: start; font: 600 0.82rem/1 var(--body); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--teal); background: var(--card); color: var(--teal); cursor: pointer; }
+.callout { background: var(--amber-soft); border-radius: 10px; padding: 12px 14px; font-size: 0.95rem; }
+.progress { font: 500 0.85rem/1 var(--mono); color: var(--muted); }
+.never { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+.never div { background: var(--bad-soft); color: var(--ink); border-radius: 8px; padding: 10px 12px; font-size: 0.93rem; }
+.never b { color: var(--bad); }
+.pick { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.pick > div { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: grid; gap: 6px; min-width: 0; }
+.pick .q { font: 500 0.75rem/1 var(--mono); color: var(--amber); }
+.pick b { font-family: var(--display); }
+@media (max-width: 720px) { .pick { grid-template-columns: 1fr; } }
+hr { border: 0; border-top: 1px solid var(--line); margin: 0; }
+footer { color: var(--muted); font-size: 0.9rem; display: grid; gap: 4px; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+</head>
+<body>
+
+<nav class="top" aria-label="Chapters">
+  <ol>
+    <li><a href="#start"><span>0</span>Before you start</a></li>
+    <li><a href="#context"><span>1</span>Your context</a></li>
+    <li><a href="#connect"><span>2</span>Connect your tools</a></li>
+    <li><a href="#habit"><span>3</span>The habit</a></li>
+    <li><a href="#skill"><span>4</span>Your first skill</a></li>
+    <li><a href="#second"><span>5</span>A second person</a></li>
+    <li><a href="#github"><span>A</span>What is GitHub</a></li>
+  </ol>
+</nav>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="brand">
+      <svg id="mark-hand" viewBox="0 0 64 64" role="img" aria-label="caivman mark: a cave-painting hand with circuit lines through the fingers">
+        <circle class="mark-disc" cx="32" cy="32" r="30"/>
+        <g class="mark-hand">
+          <ellipse cx="33" cy="44" rx="13" ry="10.5"/>
+          <rect x="17" y="16" width="7" height="30" rx="3.5"/>
+          <rect x="25.5" y="9" width="7" height="37" rx="3.5"/>
+          <rect x="34" y="12" width="7" height="34" rx="3.5"/>
+          <rect x="42.5" y="19" width="6.5" height="27" rx="3.25"/>
+          <rect x="7" y="33" width="6.5" height="19" rx="3.25" transform="rotate(-38 10.25 42.5)"/>
+        </g>
+        <g class="mark-trace">
+          <path d="M33 47 V30 L29 24 V16"/>
+          <path d="M33 34 L20.5 27 V22"/>
+          <path d="M33 38 L37.5 30 V19"/>
+          <path d="M33 42 L45.8 36 V26"/>
+        </g>
+        <g class="mark-node">
+          <circle cx="29" cy="14.5" r="2.3"/>
+          <circle cx="20.5" cy="20.5" r="2.3"/>
+          <circle cx="37.5" cy="17.5" r="2.3"/>
+          <circle cx="45.8" cy="24.5" r="2.1"/>
+          <circle cx="33" cy="47" r="2.6"/>
+        </g>
+      </svg>
+      <svg id="mark-caveman" viewBox="0 0 64 64" role="img" aria-label="caivman mark: a cartoon caveman with a wooden club marked AI" hidden>
+        <circle class="mark-disc" cx="32" cy="32" r="30"/>
+        <g transform="rotate(-56 45 26.5)">
+          <rect class="cm-fur" x="41" y="10.5" width="8" height="32" rx="4"/>
+          <ellipse class="cm-fur" cx="45" cy="13" rx="6" ry="5.5"/>
+          <text class="cm-text" x="45" y="31" text-anchor="middle" transform="rotate(90 45 28.5)">AI</text>
+        </g>
+        <path class="cm-ink" d="M16 23 Q14 8 27 9 Q40 8 38 23 L35 19 L33 23 L30 18 L27 23 L24 18 L21 23 L19 19 Z"/>
+        <circle class="cm-skin" cx="27" cy="22" r="8"/>
+        <path class="cm-ink" d="M19 24 Q19 35 27 35 Q35 35 35 24 Q32 29 27 29 Q22 29 19 24 Z"/>
+        <circle class="cm-ink" cx="24" cy="21" r="1.3"/>
+        <circle class="cm-ink" cx="30" cy="21" r="1.3"/>
+        <path class="cm-line" d="M26.5 23.5 Q27.5 25 28.5 23.5"/>
+        <path class="cm-fur" d="M19 35 L35 35 L39 53 L15 53 Z"/>
+        <circle class="cm-ink" cx="23" cy="41" r="1.4"/>
+        <circle class="cm-ink" cx="30" cy="45" r="1.4"/>
+        <circle class="cm-ink" cx="22" cy="49" r="1.4"/>
+        <rect class="cm-skin" x="19" y="53" width="5" height="6" rx="1.5"/>
+        <rect class="cm-skin" x="28" y="53" width="5" height="6" rx="1.5"/>
+        <path class="cm-line" d="M34 38 L38 37"/>
+        <circle class="cm-skin" cx="39" cy="37" r="3"/>
+      </svg>
+      <span class="wordmark">caiv<span>man</span></span>
+    </div>
+    <button class="markswitch" type="button" id="markswitch">Try the other mark (review only)</button>
+    <span class="eyebrow">set up your brain</span>
+    <h1>A frontier set-up for AI cave people (like me)</h1>
+    <p class="lede">In one sitting you will give Claude deep context on your business, your clients and how you work, connect the tools you already use, teach it to remember what you tell it, and hand it the first job you are sick of doing. The deeper the context you put in, the more leverage you get out. This leverage compounds over time as Claude learns more and more about you and your business.</p>
+    <div class="who"><span class="chip">About two hours</span><span class="chip amber">You do: amber</span><span class="chip teal">Claude does: teal</span></div>
+  </header>
+
+  <!-- ============================================================ 0 -->
+  <section id="start">
+    <span class="eyebrow">Chapter 0</span>
+    <h2>Before you start</h2>
+    <p>Claude is very capable and very fast, and it starts every conversation knowing nothing about you. Everything in this guide is about fixing that once, properly, so you never explain your business twice.</p>
+    <div class="why">
+      <div><strong>Context is the leverage</strong><span class="muted small">What Claude knows about you decides how good its work is. Chapter 1 is the one most people skip, and the one that matters most.</span></div>
+      <div><strong>It remembers because you tell it to</strong><span class="muted small">Two phrases, "note that" and "wrap up", turn every session into a better next session.</span></div>
+      <div><strong>The payoff is a skill</strong><span class="muted small">A skill is a written method for one job. Once one exists, that job is done the same careful way every time, without you.</span></div>
+      <div><strong>Nothing is lost, and you stay in charge</strong><span class="muted small">Every change to the brain is logged on GitHub and can be undone. Claude prepares, drafts and checks. You send, sign, pay and decide.</span></div>
+    </div>
+
+    <div class="block">
+      <h3>Think of it as a kitchen</h3>
+      <p class="muted">If you have never worked with AI tools, this is the picture to keep in mind.</p>
+      <div class="tablewrap"><table class="kitchen">
+        <thead><tr><th>In the kitchen</th><th>In your set-up</th><th>What it means</th></tr></thead>
+        <tbody>
+          <tr><td>The cook</td><td>Claude</td><td>A god-gifted cook with the memory of a goldfish. For film buffs, Leonard from Memento. Brilliant every shift, and starts each one with no idea what happened on the last. Literally: an AI that works only from what is written in front of it.</td></tr>
+          <tr><td>Notes pinned by the stove</td><td>Context</td><td>Who you are, what you sell, how you write, who your clients are. The things a new starter learns in week one. The cook reads them every shift and believes every word, so keep them true. Literally: a few plain-text files in a folder.</td></tr>
+          <tr><td>A recipe</td><td>Skill</td><td>The written method for one dish, for example "turn my call notes into a proposal". Followed the same way every time, with none of the improvising. Literally: a text file of instructions for one job. Chapter 4 writes your first.</td></tr>
+          <tr><td>The recipe book</td><td>Plugin</td><td>Your favourite recipes in one book. Some you worked out yourself, some you were given, and the given ones update themselves when the author improves them. Literally: a set of skills that installs in one go. This kit ships three.</td></tr>
+          <tr><td>The locked shelf</td><td>Your brain, on GitHub</td><td>Where the notes and the recipe books live. One key to start, yours. Later you decide who else gets one, and whether they may rewrite the recipes or only cook from them. Every change is logged and can be undone. Literally: a private folder on your computer, backed up with its full history on GitHub.</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="block">
+      <h3>Who can see what</h3>
+      <p>Before you put your business into this, you should know where it goes and who can look at it. The short version: your brain is yours, the recipe books are mine, and nothing flows from you to me.</p>
+      <div class="keep">
+        <div class="in"><b>Yours, and only yours</b><ul>
+          <li>Your brain: the private repository on your GitHub account and the copy on your computer. Only you can open it.</li>
+          <li>Everything in it: your brand, your voice notes, your clients, your memory, and every skill you build.</li>
+          <li>I cannot see it, and nothing in this kit sends anything to me. Not a file, not a line, not a count.</li>
+        </ul></div>
+        <div class="on"><b>Mine, and what they do</b><ul>
+          <li>This page, the starter folder you copied once, and the three recipe books in my catalogue.</li>
+          <li>The recipe books read your folder to do their job and write their results into your folder. They do not phone home.</li>
+          <li>They are plain text. Ask Claude to show you any recipe and it will read it to you.</li>
+          <li>Updates arrive only because you switched them on, and you can switch them off.</li>
+        </ul></div>
+      </div>
+      <div class="tablewrap"><table class="gov">
+        <thead><tr><th>You're trusting</th><th>With what</th><th>What to know</th></tr></thead>
+        <tbody>
+          <tr><td>Anthropic</td><td>Whatever you type or let Claude read, the same as any Claude conversation.</td><td>Covered by the plan you pay for and its privacy terms. On a paid plan your conversations are not used to train models unless you opt in. Check the setting once and move on.</td></tr>
+          <tr><td>GitHub</td><td>Your brain, as a private repository.</td><td>Private means private: nobody sees it without an invitation from you. Two-step sign-in is what keeps it that way, which is why it is a step on this page. Bank numbers and passwords never go in, so a leak would be embarrassing, not dangerous.</td></tr>
+          <tr><td>Each tool you connect</td><td>Only what that tool's permission screen says.</td><td>Most connectors read; some can write or send. Read the screen, and if a tool should never send anything on your behalf, say so in your rulebook. You can disconnect any of them in Settings at any time.</td></tr>
+        </tbody>
+      </table></div>
+      <p class="small muted">Not legal advice, and not a reason to skip reading the terms of the tools you use. It is the honest shape of the thing.</p>
+    </div>
+
+    <div class="block">
+      <h3>What you need</h3>
+      <p class="progress" id="progress"></p>
+      <div class="phase">
+        <div class="task"><input type="checkbox" id="t-plan"><div class="body"><b>A Claude plan that includes Claude Code</b><p class="small">This guide uses the Claude desktop app's <b>Code</b> tab, because that is the version that can read and write a folder. A plain chat window cannot keep a brain. Check your plan includes Claude Code before you buy anything else.</p></div></div>
+        <div class="task"><input type="checkbox" id="t-app"><div class="body"><b>Install the desktop app and sign in</b><ol>
+          <li>Go to <b>claude.ai/download</b>, install Claude for Windows or Mac, and sign in.</li>
+          <li>Click the <b>Code</b> tab. If it asks for a folder, come back after the next step.</li>
+        </ol></div></div>
+        <div class="task"><input type="checkbox" id="t-github"><div class="body"><b>Create your GitHub login</b><ol>
+          <li>Go to <b>github.com/signup</b>. Use your work email. A username like <span class="mono">firstname-yourbusiness</span> works well.</li>
+          <li>Turn on two-step sign-in: your picture (top right) › <b>Settings</b> › <b>Password and authentication</b> › <b>Enable two-factor authentication</b>. Use an authenticator app on your phone.</li>
+          <li>That is the last time you need the GitHub website. Claude does the rest.</li>
+        </ol></div></div>
+        <div class="task"><input type="checkbox" id="t-folder"><div class="body"><b>Make a home for your brain</b><ol>
+          <li>In File Explorer or Finder, go to your own user folder and make a new folder called <span class="mono">GitHub</span>.</li>
+          <li>Keep it outside OneDrive, Dropbox and Google Drive. Sync tools fight with it. GitHub is your backup, not those.</li>
+        </ol></div></div>
+        <div class="task"><input type="checkbox" id="t-starter"><div class="body"><b>Let Claude set the brain up</b><ol>
+          <li>In the Code tab, choose the <span class="mono">GitHub</span> folder you just made.</li>
+          <li>Copy the message below, paste it in and press Enter. Claude asks permission before each step; read what it says and allow it. A browser window opens once so you can sign in to GitHub.</li>
+        </ol>
+        <div class="prompt" id="p-setup">Set up my caivman brain. Install Git and the GitHub CLI if they're missing and sign me in to GitHub through the browser. Create a private repository called caivman in my GitHub account from the caivman starter template at github.com/tmmetricadvisory/caivman-starter, copy it into this GitHub folder, and open the caivman folder. Add the caivman plugin marketplace and install its three plugins (capture, wrap-up, first-skill). Then open CLAUDE.md, tell me in plain English what each folder is for, and ask me the five questions in the start-here interview one at a time.</div>
+        <button class="copy" type="button" data-copy="p-setup">Copy message</button>
+        <p class="small muted">Done when Claude has asked you five questions (who you are, what you sell, who you sell to, what you must never share, and what you want off your plate) and says your brain is ready. From now on, always open the Code tab in the <span class="mono">caivman</span> folder. Every session gets the latest from GitHub when it opens, and wrap up saves back to it.</p></div></div>
+        <div class="task"><input type="checkbox" id="t-updates"><div class="body"><b>Switch on updates</b><p class="small">The caivman recipe books improve after you buy them, but Claude only fetches updates from catalogues you have switched on. One click, once:</p><ol>
+          <li>In the Code tab, type <span class="mono">/plugin</span> and open the <b>Marketplaces</b> tab.</li>
+          <li>Select <b>caivman</b> and choose <b>Enable auto-update</b>.</li>
+          <li>From now on, each new session picks up whatever is new. If you ever want it sooner, type <span class="mono">/plugin marketplace update caivman</span>.</li>
+        </ol></div></div>
+        <div class="task"><input type="checkbox" id="t-gather"><div class="body"><b>Gather your context before chapter 1</b><p class="small">Have these to hand, in whatever form they exist. Rough is fine.</p><ul>
+          <li>Brand guidelines, or just your logo, your colours and the font you use.</li>
+          <li>Three pieces of work you were proud of: proposals, decks, reports, a client letter.</li>
+          <li>Ten emails you wrote that sound like you. Sent items, not templates.</li>
+          <li>Your price list or how you quote, and your standard terms if you have them.</li>
+          <li>The names of your current clients and one line on each.</li>
+        </ul></div></div>
+      </div>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- ============================================================ 1 -->
+  <section id="context">
+    <span class="eyebrow">Chapter 1</span>
+    <h2>Capture your context in the right spot</h2>
+    <p>This is the chapter that decides everything after it. Claude's output can only be as good as what it knows about you. You are going to put your brand, your best work, your voice and your clients where Claude will find them every time, and then let it read the lot and write its own notes.</p>
+
+    <div class="block">
+      <h3>What's on the shelf</h3>
+      <div class="shelf">
+        <div class="shelf-head">Your brain <span>a private GitHub repository, with a working copy on your computer</span></div>
+        <div class="shelf-row">
+          <div><b>You and the business</b><span class="path">context/me.md · context/business.md</span><span class="eg">Filled by the five-question interview. Your role, what you sell, who buys it, how you like to work.</span></div>
+          <div><b>Brand</b><span class="path">context/brand/</span><span class="eg">Your logo, fonts, brand.md and the Word and PowerPoint templates Claude built. Small files a skill needs every time, so they live on the shelf.</span></div>
+          <div><b>Standards</b><span class="path">context/standards.md</span><span class="eg">What a good one of yours has in it: structure, length, what is always on page one. Written by Claude from your best work.</span></div>
+          <div><b>Voice</b><span class="path">context/voice.md</span><span class="eg">How you open, how long you go, what you never say. Written by Claude from your own emails.</span></div>
+          <div><b>Clients</b><span class="path">clients/&lt;name&gt;/</span><span class="eg">One folder per client with a one-page memory: what is live, what was agreed, what to avoid.</span></div>
+          <div><b>Sources</b><span class="path">context/sources.md</span><span class="eg">Where your documents actually live: the SharePoint or Drive folder for proposals, the price list, last year's decks. One line each. Claude reads them there instead of copying them in.</span></div>
+          <div><b>Never share</b><span class="path">context/never-share.md</span><span class="eg">The list Claude checks before anything leaves: client names that stay private, numbers that are confidential, topics that are off limits.</span></div>
+          <div><b>Memory</b><span class="path">memory/</span><span class="eg">A dated note per day, written by wrap up. Claude reads today's and yesterday's when it starts.</span></div>
+          <div><b>Outbox</b><span class="path">outbox/</span><span class="eg">Where finished files land: the proposal, the report, the Word file a skill made. Stays on your computer, never goes to GitHub. Move a file out when you send it.</span></div>
+          <div><b>The rulebook</b><span class="path">CLAUDE.md</span><span class="eg">Standing instructions every session reads first. Plain English. You can edit it by asking.</span></div>
+        </div>
+      </div>
+      <div class="keep">
+        <div class="on"><b>The bench: <span class="mono">bench/</span></b><ul>
+          <li>Where you drop the raw material for capture: your three best pieces and ten emails.</li>
+          <li>Stays on your computer. It is never sent to GitHub, so a colleague you invite later never sees your sent items.</li>
+          <li>Claude reads it once, writes its notes onto the shelf, and the bench can be cleared or left.</li>
+        </ul></div>
+        <div><b>Why documents stay where they live</b><ul>
+          <li>GitHub is built for text. A deck or a spreadsheet is stored whole, every version, and never merged.</li>
+          <li>The proposal in SharePoint is the one you sent. A copy in the brain is the one you forgot to update.</li>
+          <li>Once a tool is connected (chapter 2), Claude reads the documents where they are. The brain keeps the notes and a pointer, not the pile.</li>
+        </ul></div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <h3><span class="mono">A</span>Drop your files in</h3>
+      <div class="task"><input type="checkbox" id="t-brand"><div class="body"><b>Brand into <span class="mono">context/brand/</span></b><p class="small">Guidelines PDF, logo files (the real ones, not a screenshot), font files if you have them. If all you have is a website, that works as a fallback, but real files beat a guess every time.</p></div></div>
+      <div class="task"><input type="checkbox" id="t-best"><div class="body"><b>Best work onto the bench: <span class="mono">bench/best-work/</span></b><p class="small">Three pieces, the originals (Word, PowerPoint, PDF). Pick the ones a client said yes to. Remove anything you would not want Claude to quote back to a different client. If your documents live in SharePoint or Drive and that tool is already connected, you can skip the copy and tell Claude where they are instead.</p></div></div>
+      <div class="task"><input type="checkbox" id="t-voice"><div class="body"><b>Emails onto the bench: <span class="mono">bench/voice/</span></b><p class="small">Ten sent emails that sound like you on a good day: a proposal follow-up, a tricky reply, a quick yes. Paste them into one text file or drop them as files. Strip anything confidential first.</p></div></div>
+      <div class="task"><input type="checkbox" id="t-sources"><div class="body"><b>Tell Claude where the rest lives</b><p class="small">Ask Claude: <span class="mono">"Note that my proposals are in [folder], my price list is [file] and last year's decks are in [folder]."</span> It writes each one to <span class="mono">context/sources.md</span>. Nothing is copied. From now on it reads them there, through the connector or when you drop one on the bench.</p></div></div>
+      <div class="task"><input type="checkbox" id="t-clients"><div class="body"><b>Clients into <span class="mono">clients/</span></b><p class="small">Ask Claude: <span class="mono">"Make a folder for each of these clients and ask me two questions about each."</span> Give it the names. Two questions each is enough to start; wrap up fills the rest over time.</p></div></div>
+    </div>
+
+    <div class="phase">
+      <h3><span class="mono">B</span>Let Claude read it and write its notes</h3>
+      <div class="task"><input type="checkbox" id="t-capture"><div class="body"><b>Run capture</b><ol>
+        <li>Copy the message below and paste it in.</li>
+        <li>Claude reads every file on the bench and in context/brand, then writes brand.md, voice.md, standards.md, sources.md and your two templates onto the shelf. It shows you each one and asks whether it is right.</li>
+        <li>Reading Word and PDF files and building the templates uses Python. When Claude asks permission to run it, allow it. Without it, Claude can only read plain text and the templates wait.</li>
+      </ol>
+      <div class="prompt" id="p-capture">Run capture. Read everything in context/brand and on the bench (bench/best-work and bench/voice). Write brand.md, voice.md and standards.md, record where each source came from in sources.md, build my Word and PowerPoint templates from the brand, and show me each one before you save it. Leave the bench out of GitHub.</div>
+      <button class="copy" type="button" data-copy="p-capture">Copy message</button></div></div>
+      <div class="task"><input type="checkbox" id="t-voicecheck"><div class="body"><b>Check the voice against a real sample, not a draft</b><ol>
+        <li>Ask Claude to write a short email to a client in your voice about something real.</li>
+        <li>Read it next to one of your own. If it is punchier, warmer or more clever than you are, say so plainly and paste another real email of yours. Do not describe the problem; show it.</li>
+        <li>Repeat until a client would not notice the difference.</li>
+      </ol>
+      <div class="callout"><b>The most common mistake:</b> accepting a voice that is a better writer than you. It reads as marketing to everyone who knows you. A real sample fixes it in one round; feedback in words takes five.</div></div></div>
+      <div class="task"><input type="checkbox" id="t-template"><div class="body"><b>Open the templates</b><p class="small">Ask Claude: <span class="mono">"Write me a one-page proposal for [a real prospect] as a Word file."</span> It lands in <span class="mono">outbox/</span>. Open it. Logo in the right place, your colours, your fonts, your structure. If anything is off, say what, and it fixes the template, not just the file.</p></div></div>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- ============================================================ 2 -->
+  <section id="connect">
+    <span class="eyebrow">Chapter 2</span>
+    <h2>Connect your tools</h2>
+    <p>Chapter 1 gave Claude deep context on your business. This chapter lets it see what is happening in it. Every tool you connect is one less thing you have to paste. Connect everything you actually use; skip anything you do not.</p>
+
+    <div class="phase">
+      <h3><span class="mono">A</span>Connect what you use</h3>
+      <div class="task"><input type="checkbox" id="t-connectors"><div class="body"><b>Connect each tool you use</b><ol>
+        <li>In the Claude app, open <b>Settings › Connectors</b>.</li>
+        <li>For each row in the table below that you use, click <b>Connect</b> and sign in. Read what it asks permission for; most ask to read, some ask to write.</li>
+        <li>Back in the Code tab, paste the proving prompt for each one. If it answers from your real data, it is connected.</li>
+      </ol></div></div>
+    </div>
+
+    <div class="block">
+      <div class="tablewrap"><table class="gov">
+        <thead><tr><th>Tool</th><th>What it unlocks</th><th>The prompt that proves it</th><th>If you can't connect it</th></tr></thead>
+        <tbody>
+          <tr><td>Google Workspace</td><td>Gmail, Calendar, Drive, Docs, Sheets, Slides. What you promised, what is coming up, the files you were working from.</td><td><span class="mono">"What did I promise anyone by email this week that I haven't done?"</span></td><td>Forward or paste the emails; drop files into the folder.</td></tr>
+          <tr><td>Microsoft 365</td><td>Outlook, Teams, SharePoint, OneDrive. Same as above for Microsoft shops.</td><td><span class="mono">"What's in my calendar next week, and what do I need to prepare for each meeting?"</span></td><td>Same. Some company accounts allow reading but not sending; Claude drafts and you send.</td></tr>
+          <tr><td>Xero, QuickBooks or MYOB</td><td>Who owes you, what you owe, how the month looks.</td><td><span class="mono">"Who owes me money, how long overdue, and draft a reminder to each in my voice."</span></td><td>Export the aged receivables report and drop it in the folder.</td></tr>
+          <tr><td>Notion</td><td>Your notes, wikis and project pages.</td><td><span class="mono">"Summarise what I've written about [client] in Notion."</span></td><td>Export the page as Markdown into the client's folder.</td></tr>
+          <tr><td>Slack</td><td>Team and client channels.</td><td><span class="mono">"What questions are waiting on me in Slack?"</span></td><td>Paste the thread.</td></tr>
+          <tr><td>HubSpot</td><td>Your pipeline and contacts.</td><td><span class="mono">"Which deals have gone quiet for more than two weeks?"</span></td><td>Export deals to a spreadsheet and drop it in.</td></tr>
+          <tr><td>Canva</td><td>Your designs, on brand.</td><td><span class="mono">"Make a LinkedIn post graphic for [topic] using my brand."</span></td><td>Claude writes the copy and a brief; you build it.</td></tr>
+          <tr><td>Stripe, Square or Shopify</td><td>Sales as they happen.</td><td><span class="mono">"How did last week compare with the same week last year?"</span></td><td>Export the sales report.</td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout"><b>Once a tool is connected, leave your documents where they are.</b> Point Claude at the folder: <span class="mono">"My proposals are in the Proposals folder on SharePoint; read the last three before you write this one."</span> It reads them in place and adds the folder to sources.md. The bench is for when a tool is not connected.</div>
+      <div class="callout"><b>If your employer controls your Claude account</b> and connectors are switched off, chapters 1, 3 and 4 still work in full. Use the export column, and ask IT which connectors they will allow. The folder, the habit and the first skill are yours either way.</div>
+    </div>
+
+    <div class="phase">
+      <h3><span class="mono">B</span>One prompt that uses all of it</h3>
+      <div class="task"><input type="checkbox" id="t-monday"><div class="body"><b>Ask for your week</b>
+      <div class="prompt" id="p-week">Where do I stand this week? Use my calendar, my email, my accounting system and my client folders. One page: what's due, who's waiting on me, who owes me, and the three things to do first on Monday.</div>
+      <button class="copy" type="button" data-copy="p-week">Copy message</button>
+      <p class="small muted">This is what chapters 1 and 2 together make possible. Note anything it got wrong; chapter 3 shows you how to make the correction stick.</p></div></div>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- ============================================================ 3 -->
+  <section id="habit">
+    <span class="eyebrow">Chapter 3</span>
+    <h2>The habit: note that, and wrap up</h2>
+    <p>Everything you have set up only gets better if what you learn in a session makes it back onto the shelf. Two phrases do that. You never decide what to save or where it goes; Claude does, and tells you.</p>
+
+    <div class="block">
+      <h3>During a session: <span class="mono">note that…</span></h3>
+      <p>When you tell Claude something it should always know, start with "note that". <span class="mono">"Note that Future Proof invoices on the 1st, not month end."</span> It goes straight to the right file, and Claude confirms where.</p>
+    </div>
+
+    <div class="block">
+      <h3>At the end: type <span class="mono">wrap up</span></h3>
+      <div class="steps4">
+        <div class="step you"><span class="n">1 · You</span><b>Type "wrap up"</b><span class="small muted">When you have finished a piece of work.</span></div>
+        <div class="step"><span class="n">2 · Claude</span><b>Keeps or drops</b><span class="small muted">Keeps what will matter again: corrections, decisions, facts about a client. Drops one-offs.</span></div>
+        <div class="step"><span class="n">3 · Claude</span><b>Files it on the right shelf</b><span class="small muted">A client fact goes to that client. A way you like things done goes to the rulebook. Today's thread goes to memory.</span></div>
+        <div class="step"><span class="n">4 · Claude</span><b>Saves it to GitHub and tells you</b><span class="small muted">A short list of what it kept. Logged under your name, undoable. Next session starts with all of it.</span></div>
+      </div>
+      <div class="report">
+        <b>What you'll see afterwards</b>
+        <span class="small muted">Saved for next time</span>
+        <ul class="small"><li>Rapid Teams: proposals go to Angus first, never straight to the client (clients/rapid-teams)</li><li>You prefer proposals under two pages with the price on page one (CLAUDE.md)</li><li>Open thread: the Vector pitch deck is half done, section 3 next (memory/2026-11-11)</li></ul>
+        <span class="small muted">Not kept: today's draft email and the numbers you were checking (one-offs).</span>
+      </div>
+      <div class="keep">
+        <div><b>Wrap up when you…</b><ul><li>corrected Claude ("no, we always…")</li><li>made a decision ("from now on…")</li><li>told it something about a client</li><li>left something half done</li></ul></div>
+        <div><b>Don't worry about…</b><ul><li>wrapping up a quick question: if there is nothing to keep, Claude says so</li><li>getting it wrong: every change is logged on GitHub and can be undone, and every file is plain text you can read</li><li>remembering to do it: Claude asks when it hears "thanks, that's it"</li></ul></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3>What never goes on the shelf</h3>
+      <p>The brain lives on GitHub, private to you today and perhaps shared with a colleague later. Keep these out of it, and Claude will refuse to write them even if you ask.</p>
+      <div class="never">
+        <div><b>Bank details.</b> BSB and account numbers, card numbers. Say "the account ending 123".</div>
+        <div><b>Passwords and keys.</b> Logins, API keys, tokens. They live in a password manager, never in a file Claude reads.</div>
+        <div><b>Tax file numbers</b> and anyone's personal details beyond a name and a role.</div>
+        <div><b>Anything on your never-share list.</b> Claude checks it before any file or email leaves.</div>
+      </div>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- ============================================================ 4 -->
+  <section id="skill">
+    <span class="eyebrow">Chapter 4</span>
+    <h2>Build your first skill</h2>
+    <p>A skill is a written recipe for one job. Once it exists, Claude does that job the same way every time, using everything in your brain, and you only check the result. This is where the set-up pays for itself. Pick one thing you do routinely and get it off your plate.</p>
+
+    <div class="block">
+      <h3>Pick the job: three questions</h3>
+      <div class="pick">
+        <div><span class="q">1</span><b>Do you do it every week, the same way?</b><span class="small muted">The weekly client update. The proposal after a call. The Friday numbers. The Monday plan. Not "marketing".</span></div>
+        <div><span class="q">2</span><b>Does it start from something you can hand over?</b><span class="small muted">Call notes, an email, a spreadsheet, a transcript, a folder of receipts. If the input is "my head", pick something else first.</span></div>
+        <div><span class="q">3</span><b>Can you show one you were happy with?</b><span class="small muted">One good example teaches more than a page of instructions. If you cannot find one, the job is not ready to hand over yet.</span></div>
+      </div>
+      <p class="small muted">Three yeses: that is your first skill. Two: fine, but expect a second round of corrections. One: pick another.</p>
+    </div>
+
+    <div class="block">
+      <h3>Two worked examples</h3>
+      <div class="keep">
+        <div class="in"><b>Working in the business: call notes to proposal</b><ul>
+          <li><b>Input:</b> your rough notes or the transcript from a discovery call.</li>
+          <li><b>Output:</b> a two-page proposal as a Word file, your brand, your structure, your pricing, your voice.</li>
+          <li><b>Uses:</b> brand, standards, voice, the price list, the client folder.</li>
+          <li><b>You do:</b> read it once, change what you would change, send.</li>
+        </ul></div>
+        <div class="on"><b>Working on the business: the Friday page</b><ul>
+          <li><b>Input:</b> nothing. It reads your accounting system, email and calendar.</li>
+          <li><b>Output:</b> one page: cash in and out this week, who owes you, what you promised, three things for Monday.</li>
+          <li><b>Uses:</b> connectors from chapter 2 and every client folder.</li>
+          <li><b>You do:</b> read it with a coffee. Correct anything wrong with "note that".</li>
+        </ul></div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <h3><span class="mono">A</span>Build it</h3>
+      <div class="task"><input type="checkbox" id="t-example"><div class="body"><b>Put your good example in the folder</b><p class="small">Drop one finished example of the job (the proposal you were proud of, the update the client liked) onto the bench at <span class="mono">bench/best-work/</span> if it is not already there, or tell Claude where it lives if that tool is connected.</p></div></div>
+      <div class="task"><input type="checkbox" id="t-build"><div class="body"><b>Describe the job and let Claude write the recipe</b><ol>
+        <li>Copy the message below, fill in the brackets in your own words, paste it in.</li>
+        <li>Claude uses its skill builder to interview you: what comes in, what goes out, what good looks like, where you want to be asked before anything is sent. Answer plainly.</li>
+        <li>It writes the skill, shows it to you in plain English, and saves it to your brain. Saving into the skills folder brings up one more permission question; allow it.</li>
+      </ol>
+      <div class="prompt" id="p-skill">Build my first skill. The job is [what you do, in one sentence]. It starts from [the input] and ends with [the output]. A good example is in bench/best-work/[file] (or: in [folder] on [SharePoint or Drive]). Use the skill builder, ask me what you need to know one question at a time, and show me the recipe in plain English before you save it.</div>
+      <button class="copy" type="button" data-copy="p-skill">Copy message</button></div></div>
+      <div class="task"><input type="checkbox" id="t-run"><div class="body"><b>Run it on a real case</b><ol>
+        <li>Give it a real input: this week's call notes, this Friday.</li>
+        <li>Read the output next to your example. Correct anything in plain words: "too long", "we never quote hourly", "the client's name is wrong".</li>
+        <li>Run it again. The second run should need fewer corrections than the first.</li>
+      </ol></div></div>
+      <div class="task"><input type="checkbox" id="t-wrap"><div class="body"><b>Wrap up</b><p class="small">Your corrections become part of the recipe. From here on, that job is Claude's, and the next skill is easier than this one. Ask Claude: <span class="mono">"What else do I do every week that could be a skill?"</span> It has watched you work, and it will have a list.</p></div></div>
+    </div>
+
+    <div class="callout"><b>Every day from here:</b> open the Code tab in your caivman folder, say "note that" when you tell it something that should stick, type "wrap up" when you finish, and run your skill when the job comes round.</div>
+  </section>
+
+  <hr>
+
+  <!-- ============================================================ 5 -->
+  <section id="second">
+    <span class="eyebrow">Chapter 5</span>
+    <h2>When a second person joins</h2>
+    <p>Your brain is already on GitHub, so sharing it is an invitation, not a move. The day someone else needs the same brain, three things change, and none of them need a programmer.</p>
+    <div class="tablewrap"><table class="gov">
+      <thead><tr><th>Change</th><th>What it means</th><th>How</th></tr></thead>
+      <tbody>
+        <tr><td>Invite them</td><td>They create a GitHub login the same way you did, accept your invitation, and Claude makes their own working copy. Every change either of you saves is logged under a name, and everyone's next session starts from the latest.</td><td>Ask Claude: <span class="mono">"Invite [name] to my caivman repository and write them the set-up message."</span></td></tr>
+        <tr><td>Shared versus private</td><td>How the business works goes on the shared shelf. Anything about pay, deals not yet announced, legal matters or a person's own preferences stays in that person's private memory. When unsure, Claude keeps it private; private can be shared later, shared cannot be unshared.</td><td>Wrap up sorts each lesson and lists the private ones so the person can say "share that one".</td></tr>
+        <tr><td>A monthly look at what changed</td><td>Once two people can change the recipes, someone reads the month's changes. Twenty minutes, and the one control you need while things are light.</td><td>Ask Claude: <span class="mono">"Run the change review for October."</span></td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <hr>
+
+  <!-- ============================================================ Appendix -->
+  <section id="github">
+    <span class="eyebrow">Appendix</span>
+    <h2>What is GitHub, actually</h2>
+    <p>Most explanations of GitHub are written by programmers for programmers, which is why it takes everyone else forever and a day to get it. Here is the version for the rest of us. You will not be asked to do anything on it beyond creating a login; Claude does the rest. But it helps to know what the thing is.</p>
+
+    <div class="block">
+      <h3>Where it came from</h3>
+      <p>In 2005 the people building Linux, the operating system that runs most of the internet, had a problem: thousands of volunteers editing the same pile of code at once. Linus Torvalds wrote Git to solve it. Everyone works on their own copy, every change is recorded with a name and a note, and the copies are merged back together. Where two people changed the same line, it stops and asks instead of guessing. Track changes on steroids, for a whole folder, with nothing ever flattened by "Accept all". GitHub arrived in 2008 as the website that keeps those folders online and adds the social bit: accounts, invitations, who did what.</p>
+      <p>One consequence worth knowing. Git does its clever line-by-line work on text, and only on text. It will store a PowerPoint, but all it can say about it is "this changed", and it keeps a whole new copy each time. That is why your brain is built from text, and why your decks and spreadsheets stay where they already live.</p>
+    </div>
+
+    <div class="block">
+      <h3>The one-paragraph version</h3>
+      <p>GitHub is a website that keeps folders. Not like Dropbox, which copies a folder somewhere else and hopes for the best. GitHub keeps every version of every file in the folder, with a note saying who changed what and why, forever. You can look at the folder as it was last Tuesday. You can put any file back the way it was. That is the whole trick, and it is why programmers, who break things for a living, cannot work without it.</p>
+    </div>
+
+    <div class="block">
+      <h3>Why your brain lives there</h3>
+      <div class="why">
+        <div><strong>History</strong><span class="muted small">Every wrap up is a saved version with a note. Six months from now you can see what Claude knew in May.</span></div>
+        <div><strong>Undo</strong><span class="muted small">Claude wrote something wrong into a client file? Put it back. Nothing in the brain is ever truly lost.</span></div>
+        <div><strong>A second computer</strong><span class="muted small">Laptop died, or you want the same brain at home. Sign in, and Claude fetches the lot.</span></div>
+        <div><strong>A second person</strong><span class="muted small">Chapter 5. Invite someone, and you both work from the same brain with everyone's changes logged under a name.</span></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3>The words you will hear</h3>
+      <p class="muted">Claude will use these when it tells you what it did. None of them need you to do anything.</p>
+      <div class="tablewrap"><table class="gov">
+        <thead><tr><th>Word</th><th>What it is</th><th>In kitchen terms</th></tr></thead>
+        <tbody>
+          <tr><td>Git</td><td>The tool on your computer that tracks changes to a folder. GitHub is the website that keeps a copy online. Two different things with a confusingly similar name, like Java and JavaScript, or Australia and Austria.</td><td>The habit of writing down every change to the recipe book.</td></tr>
+          <tr><td>Repository (repo)</td><td>A folder that Git is tracking. Your brain is one repository called <span class="mono">caivman</span>.</td><td>The locked shelf.</td></tr>
+          <tr><td>Private</td><td>Only people you invite can see it. Your brain is private. Public repositories exist too; the caivman recipe books are in one, which is why anyone can install them.</td><td>Who has a key.</td></tr>
+          <tr><td>Clone</td><td>Your working copy on your computer, made from the copy on GitHub. You work in the clone; GitHub holds the original and the history.</td><td>The shelf in your kitchen; GitHub keeps the vault copy.</td></tr>
+          <tr><td>Commit</td><td>One saved change, with a note and a name on it. Wrap up makes one each time. Think of it as a snapshot, not a sync.</td><td>A dated entry in the margin: "halved the salt, Tim, 12 Nov".</td></tr>
+          <tr><td>Push and pull</td><td>Push sends your commits up to GitHub. Pull fetches anyone else's down. Claude pulls when a session opens and pushes at wrap up.</td><td>Putting the book back on the shelf, and taking it down again.</td></tr>
+          <tr><td>Two-factor (2FA)</td><td>A six-digit code from your phone at sign-in, as well as your password. The thing that makes "private" mean private.</td><td>The second key.</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="block">
+      <h3>What trips people up</h3>
+      <div class="keep">
+        <div><b>It is not Dropbox</b><ul><li>Dropbox syncs every keystroke, silently, and keeps a month of versions.</li><li>GitHub saves only when told, with a note, and keeps every version for good.</li><li>So nothing reaches GitHub until a wrap up. That is deliberate: a save with a reason attached is worth more than a thousand silent ones.</li></ul></div>
+        <div><b>You will barely see it</b><ul><li>You make a login once and turn on two-factor. That is the last time you visit the website.</li><li>Everything else, Claude does and tells you about in plain words: "saved to GitHub, three files, logged under your name".</li><li>If you are ever curious, go to github.com and open your caivman repository. Every file is readable. Every change has a note.</li></ul></div>
+      </div>
+      <div class="callout"><b>If you only remember one thing:</b> GitHub is where your brain is kept safe, with a memory of every change. Claude does the work; you own the shelf.</div>
+    </div>
+  </section>
+
+  <footer>
+    <span>caivman is a placeholder name; the mark is a cave-painting hand with the circuit running through it. Last checked against the Claude desktop app on 18 November 2026.</span>
+    <span>What's new, 18 November: an outbox for finished files, and the two permission questions named so you know to allow them. The recipe books update on their own once you switch updates on; to force it, type <span class="mono">/plugin marketplace update caivman</span>.</span>
+    <span>Built from the WA Fuels onboarding pack. Nothing in this guide names a client of Metric Advisory.</span>
+  </footer>
+
+</div>
+
+<script>
+const KEY = "caivman-guide";
+const boxes = [...document.querySelectorAll('.task input[type="checkbox"]')];
+let state = {};
+try { state = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch {}
+function paint() {
+  boxes.forEach(b => b.closest(".task").classList.toggle("done", b.checked));
+  const n = boxes.filter(b => b.checked).length;
+  document.getElementById("progress").textContent = n + " of " + boxes.length + " steps done";
+}
+boxes.forEach(b => {
+  b.checked = !!state[b.id];
+  b.addEventListener("change", () => { state[b.id] = b.checked; try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {} paint(); });
+});
+paint();
+document.getElementById("markswitch").addEventListener("click", () => {
+  const h = document.getElementById("mark-hand"), c = document.getElementById("mark-caveman");
+  h.hidden = !h.hidden; c.hidden = !c.hidden;
+});
+document.querySelectorAll("button.copy").forEach(btn => btn.addEventListener("click", async () => {
+  const el = document.getElementById(btn.dataset.copy);
+  try { await navigator.clipboard.writeText(el.textContent); btn.textContent = "Copied"; }
+  catch { const r = document.createRange(); r.selectNodeContents(el); const s = getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = "Selected: press Ctrl+C"; }
+  setTimeout(() => { btn.textContent = "Copy message"; }, 2500);
+}));
+</script>
+
+</body>
+</html>
