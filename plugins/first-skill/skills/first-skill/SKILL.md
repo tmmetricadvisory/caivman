@@ -30,7 +30,7 @@ Ask for one finished example of the job the person was proud of: on the bench at
 Ask only what the example and the brain do not already answer. Usually four to six questions:
 
 - What exactly comes in, and where from? (a file, an email, a system through a connector)
-- What exactly goes out, in what format, and where does it go? (a Word file on the letterhead, an email draft, a page in a folder)
+- What exactly goes out, in what format, and where does it go? (a Word file on the letterhead, an email draft, a page in a folder). The default home for a finished file is `outbox/` in the brain, which never goes to GitHub; say so, and only ask if they want somewhere else.
 - What makes a good one? Anything the example does not show.
 - What must Claude check before it is done?
 - Where must Claude stop and ask you? Anything that sends, pays, posts, or goes to a client needs a yes first. Say this is the default and ask what else.
@@ -39,6 +39,8 @@ Ask only what the example and the brain do not already answer. Usually four to s
 ## 4. Write the skill
 
 If Anthropic's skill-creator is installed (`/plugin install skill-creator@claude-plugins-official` adds it), hand it the answers and the example and let it write the draft; tell it the person is not technical, to skip evaluations unless asked, and to keep the SKILL.md under two pages. If it is not installed, write the skill yourself from `references/skill-template.md`.
+
+Saving into `.claude/skills/` brings up a permission question in Claude Code. Say it is coming and ask the person to allow it. If the write is refused, show the full text, record in today's note that the skill is approved but not yet saved, and save it once they allow it. Never route around a refused write with a shell copy.
 
 Either way the result is `.claude/skills/<job-name>/SKILL.md` in the brain, with:
 
@@ -64,3 +66,4 @@ Tell the person: the job is now a skill, it runs when they say the words in its 
 - Never write a skill that sends an email, makes a payment, posts publicly, or changes a record in a connected tool without the person being asked in that session.
 - Never copy a client's confidential content from the example into the skill. Shape, not content.
 - Never leave the person with a skill they have not seen run once on a real case.
+- Never work around a permission Claude Code refused. Ask the person to allow it.
