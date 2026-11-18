@@ -62,12 +62,6 @@ nav.top a span { color: var(--amber); font-family: var(--mono); margin-right: 6p
 .mark-hand { fill: var(--amber); }
 .mark-trace { fill: none; stroke: var(--paper); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .mark-node { fill: var(--paper); stroke: var(--amber); stroke-width: 1.2; }
-.cm-ink { fill: var(--ink); }
-.cm-skin { fill: var(--paper); stroke: var(--ink); stroke-width: 1.4; }
-.cm-fur { fill: var(--amber); stroke: var(--ink); stroke-width: 1.4; }
-.cm-line { fill: none; stroke: var(--ink); stroke-width: 1.4; stroke-linecap: round; }
-.cm-text { font: 800 7.5px var(--display); fill: var(--ink); letter-spacing: 0.02em; }
-.markswitch { font: 500 0.72rem/1 var(--mono); color: var(--muted); background: none; border: 1px dashed var(--line); border-radius: 999px; padding: 5px 9px; cursor: pointer; justify-self: start; }
 .who { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip { font: 500 0.78rem/1 var(--mono); padding: 6px 10px; border-radius: 999px; background: var(--navy-soft); color: var(--navy); }
 .chip.amber { background: var(--amber-soft); color: var(--amber); }
@@ -184,31 +178,8 @@ footer { color: var(--muted); font-size: 0.9rem; display: grid; gap: 4px; }
           <circle cx="33" cy="47" r="2.6"/>
         </g>
       </svg>
-      <svg id="mark-caveman" viewBox="0 0 64 64" role="img" aria-label="caivman mark: a cartoon caveman with a wooden club marked AI" hidden>
-        <circle class="mark-disc" cx="32" cy="32" r="30"/>
-        <g transform="rotate(-56 45 26.5)">
-          <rect class="cm-fur" x="41" y="10.5" width="8" height="32" rx="4"/>
-          <ellipse class="cm-fur" cx="45" cy="13" rx="6" ry="5.5"/>
-          <text class="cm-text" x="45" y="31" text-anchor="middle" transform="rotate(90 45 28.5)">AI</text>
-        </g>
-        <path class="cm-ink" d="M16 23 Q14 8 27 9 Q40 8 38 23 L35 19 L33 23 L30 18 L27 23 L24 18 L21 23 L19 19 Z"/>
-        <circle class="cm-skin" cx="27" cy="22" r="8"/>
-        <path class="cm-ink" d="M19 24 Q19 35 27 35 Q35 35 35 24 Q32 29 27 29 Q22 29 19 24 Z"/>
-        <circle class="cm-ink" cx="24" cy="21" r="1.3"/>
-        <circle class="cm-ink" cx="30" cy="21" r="1.3"/>
-        <path class="cm-line" d="M26.5 23.5 Q27.5 25 28.5 23.5"/>
-        <path class="cm-fur" d="M19 35 L35 35 L39 53 L15 53 Z"/>
-        <circle class="cm-ink" cx="23" cy="41" r="1.4"/>
-        <circle class="cm-ink" cx="30" cy="45" r="1.4"/>
-        <circle class="cm-ink" cx="22" cy="49" r="1.4"/>
-        <rect class="cm-skin" x="19" y="53" width="5" height="6" rx="1.5"/>
-        <rect class="cm-skin" x="28" y="53" width="5" height="6" rx="1.5"/>
-        <path class="cm-line" d="M34 38 L38 37"/>
-        <circle class="cm-skin" cx="39" cy="37" r="3"/>
-      </svg>
       <span class="wordmark">caiv<span>man</span></span>
     </div>
-    <button class="markswitch" type="button" id="markswitch">Try the other mark (review only)</button>
     <span class="eyebrow">set up your brain</span>
     <h1>A frontier set-up for AI cave people (like me)</h1>
     <p class="lede">In one sitting you will give Claude deep context on your business, your clients and how you work, connect the tools you already use, teach it to remember what you tell it, and hand it the first job you are sick of doing. The deeper the context you put in, the more leverage you get out. This leverage compounds over time as Claude learns more and more about you and your business.</p>
@@ -619,10 +590,6 @@ boxes.forEach(b => {
   b.addEventListener("change", () => { state[b.id] = b.checked; try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {} paint(); });
 });
 paint();
-document.getElementById("markswitch").addEventListener("click", () => {
-  const h = document.getElementById("mark-hand"), c = document.getElementById("mark-caveman");
-  h.hidden = !h.hidden; c.hidden = !c.hidden;
-});
 document.querySelectorAll("button.copy").forEach(btn => btn.addEventListener("click", async () => {
   const el = document.getElementById(btn.dataset.copy);
   try { await navigator.clipboard.writeText(el.textContent); btn.textContent = "Copied"; }
